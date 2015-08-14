@@ -1,5 +1,6 @@
 # CircuitBreaker
 [![Build Status](https://travis-ci.org/Rdbaker/CircuitBreaker.svg?branch=master)](https://travis-ci.org/Rdbaker/CircuitBreaker)
+
 An implementation of the circuit breaker programming pattern for use in client side javascript.
 
 

@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "description": "An implementation of the circuit breaker pattern for use in JavaScript.",
   "scripts": {
-    "test": "gulp test"
+    "build": "node ./node_modules/.bin/gulp build",
+    "test": "node ./node_modules/.bin/gulp test",
+    "docs": "node ./node_modules/.bin/docco src/*.coffee"
   },
   "repository": {
     "type": "git",
@@ -22,11 +24,13 @@
   "homepage": "https://github.com/Rdbaker/CircuitBreaker#readme",
   "devDependencies": {
     "coffeeify": "^1.1.0",
+    "docco": "^0.7.0",
     "gulp": "^3.9.0",
     "gulp-browserify": "^0.5.1",
     "gulp-rename": "^1.2.2",
     "jasmine-core": "^2.3.4",
     "karma": "^0.13.9",
+    "karma-browserify": "^4.3.0",
     "karma-coffee-preprocessor": "^0.3.0",
     "karma-jasmine": "^0.3.6",
     "karma-phantomjs-launcher": "^0.2.1",

@@ -1,6 +1,6 @@
 {
   "name": "circuitbreaker-js",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "An implementation of the circuit breaker pattern for use in JavaScript.",
   "scripts": {
     "build": "node ./node_modules/.bin/gulp build",

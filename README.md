@@ -25,6 +25,17 @@ node ./node_modules/gulp/bin/gulp.js build
 This will take the files in `./src/*.coffee` and build them to be `./dist/circuitbreaker.js`
 
 
+## Documentation
+Currently, all documentation lives in the code.
+Since this is a pre-V1 version, there is no API documentation yet.
+
+To build the annotated source, run the command:
+
+```
+npm docs
+```
+
+
 ## Testing
 To run the tests, just use the command:
 

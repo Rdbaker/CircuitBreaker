@@ -1,5 +1,5 @@
 {
-  "name": "circuitbreaker",
+  "name": "circuitbreaker-js",
   "version": "1.0.0",
   "description": "An implementation of the circuit breaker pattern for use in JavaScript.",
   "scripts": {

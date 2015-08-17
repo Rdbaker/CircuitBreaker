@@ -32,7 +32,7 @@ Since this is a pre-V1 version, there is no API documentation yet.
 To build the annotated source, run the command:
 
 ```
-npm docs
+npm run-script docs
 ```
 
 

@@ -1,12 +1,14 @@
 'use strict'
 
-CircuitBreaker = require('../dist/circuitbreaker')
+CircuitBreaker = require('../circuitbreaker.coffee')
 _ = require('lodash')
 
-describe 'CircuitBreaker', ->
+
+describe('CircuitBreaker', ->
+  cb = new CircuitBreaker
+
   it 'is defined', ->
     expect(CircuitBreaker).toBeDefined()
-    console.log cb
 
   describe 'The initial state', ->
     it 'has $ defined on it', ->
@@ -14,6 +16,9 @@ describe 'CircuitBreaker', ->
 
     it 'has _ defined on it', ->
       expect(cb._).toBeDefined()
+
+    it 'has urijs defined on it', ->
+      expect(cb.urijs).toBeDefined()
 
     it 'has "ajax" defined on it', ->
       expect(cb.ajax).toBeDefined()
@@ -30,14 +35,12 @@ describe 'CircuitBreaker', ->
     it 'has "configuration" defined on it', ->
       expect(cb.configuration).toBeDefined()
 
-    it 'has "validate_configuration" defined on it', ->
-      expect(cb.validate_configuration).toBeDefined()
-
-    it 'has "proper_code" defined on it', ->
-      expect(cb.proper_code).toBeDefined()
+    it 'has "get_config" defined on it', ->
+      expect(cb.get_config).toBeDefined()
 
     it 'has "FSMs" defined on it', ->
       expect(cb.FSMs).toBeDefined()
 
-    it 'only has 10 initial objects/functions', ->
+    it 'only has 9 initial objects/functions', ->
       expect(Object.keys(cb).length + Object.keys(cb.__proto__).length).toBe 10
+)

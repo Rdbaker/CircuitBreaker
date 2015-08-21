@@ -22,7 +22,13 @@
     "url": "https://github.com/Rdbaker/CircuitBreaker/issues"
   },
   "homepage": "https://github.com/Rdbaker/CircuitBreaker#readme",
+  "browserify": {
+    "transform": [
+      "coffeeify"
+    ]
+  },
   "devDependencies": {
+    "URIjs": "^1.16.0",
     "coffeeify": "^1.1.0",
     "docco": "^0.7.0",
     "gulp": "^3.9.0",

@@ -1,18 +1,17 @@
 module.exports = function(karma) {
   karma.set({
-    frameworks: ['jasmine', 'browserify'],
+    frameworks: ['browserify', 'jasmine'],
 
     files: [
-      'tests/**/*.coffee'
+      'src/tests/**/*.coffee'
     ],
 
     preprocessors: {
-      'tests/**/*.coffee': ['browserify']
+      'src/tests/**/*.coffee': ['browserify']
     },
 
     browserify: {
       debug: true,
-      transform: ['coffeeify'],
       extentions: ['.coffee']
     },
 

@@ -6,7 +6,6 @@ var rename = require('gulp-rename');
 gulp.task('build', function() {
   gulp.src(config.dirs.src + '/circuitbreaker.coffee', { read: false })
     .pipe(browserify({
-      transform: ['coffeeify'],
       extensions: ['.coffee']
     }))
     .pipe(rename('circuitbreaker.js'))

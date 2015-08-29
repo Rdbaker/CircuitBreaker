@@ -4,7 +4,7 @@ CircuitBreaker = require('../circuitbreaker.coffee')
 _ = require('lodash')
 
 
-describe('CircuitBreaker', ->
+describe 'CircuitBreaker', ->
   cb = new CircuitBreaker
 
   it 'is defined', ->
@@ -26,21 +26,57 @@ describe('CircuitBreaker', ->
     it 'has "configure" defined on it', ->
       expect(cb.configure).toBeDefined()
 
-    it 'has "get_fsm_from_url" defined on it', ->
-      expect(cb.get_fsm_from_url).toBeDefined()
+    it 'has "getFsmFromUrl" defined on it', ->
+      expect(cb.getFsmFromUrl).toBeDefined()
 
-    it 'has "get_url" defined on it', ->
-      expect(cb.get_url).toBeDefined()
+    it 'has "getUrl" defined on it', ->
+      expect(cb.getUrl).toBeDefined()
 
     it 'has "configuration" defined on it', ->
       expect(cb.configuration).toBeDefined()
 
-    it 'has "get_config" defined on it', ->
-      expect(cb.get_config).toBeDefined()
+    it 'has "getConfig" defined on it', ->
+      expect(cb.getConfig).toBeDefined()
 
     it 'has "FSMs" defined on it', ->
       expect(cb.FSMs).toBeDefined()
 
-    it 'only has 9 initial objects/functions', ->
-      expect(Object.keys(cb).length + Object.keys(cb.__proto__).length).toBe 10
-)
+    it 'has "getAjaxArgs" defined on it', ->
+      expect(cb.getAjaxArgs).toBeDefined()
+
+    it 'only has 11 initial objects/functions', ->
+      expect(Object.keys(cb).length + Object.keys(cb.__proto__).length).toBe 11
+
+  describe '#ajax', ->
+    fsm = {}
+
+    beforeEach ->
+      fsm = jasmine.createSpyObj('fsm', ['isOk'])
+      spyOn(cb.$, 'ajax')
+      spyOn(cb, 'getUrl')
+      spyOn(cb, 'getConfig')
+      spyOn(cb, 'getAjaxArgs')
+      spyOn(cb, 'getFsmFromUrl').and.returnValue(fsm)
+
+    describe 'an "OK" FSM state', ->
+      beforeEach ->
+        fsm.isOk.and.returnValue true
+
+      it 'calls @$.ajax with its arguments', ->
+        args =
+          url: 'testurl.com/test-path'
+          method: 'GET'
+        cb.getAjaxArgs.and.returnValue args
+
+        cb.ajax args
+
+        expect(fsm.isOk).toHaveBeenCalled()
+        expect(cb.$.ajax).toHaveBeenCalledWith args
+
+    describe 'a "Not-so-OK" FSM state', ->
+      beforeEach ->
+        fsm.isOk.and.returnValue false
+        cb.$.ajax.calls.reset()
+
+      it 'doesnt call @$.ajax', ->
+        expect(cb.$.ajax).not.toHaveBeenCalled()

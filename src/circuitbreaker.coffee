@@ -40,8 +40,8 @@ class CircuitBreaker
   # Configure
   # -----------
   # ___Set the configuration for all state machines to inherit___
-  configure: (new_config) ->
-    @configuration.update(new_config)
+  configure: (newConfig) ->
+    @configuration.update(newConfig)
 
 
   # Ajax
@@ -54,22 +54,37 @@ class CircuitBreaker
   ajax: ->
     # Get the state machine based on the URI of the
     # request
-    state_machine = @get_fsm_from_url(@get_url(arguments), @get_config(arguments))
+    stateMachine = @getFsmFromUrl(@getUrl(arguments), @getConfig(arguments))
+
+    # get the AJAX arguments
+    ajaxArgs = @getAjaxArgs arguments
 
     # Check if the state is okay to send
-    if state_machine.is_ok()
-      # TODO
-      # >> Change the ajax callbacks to first be logged
-      # >> to the correct FSM
+    if stateMachine.isOk()
+      # Get the successful callback function
+      succFunc = ajaxArgs.success
+
+      # Get the error callback function
+      failFunc = ajaxArgs.error
+
+      # Set the success callback to first log the successful request
+      ajaxArgs.success = (data, status, jqXHR) ->
+        stateMachine.successfulCall()
+        succFunc.call data, status, jqXHR
+
+      # Set the error callback to first log the failed request
+      ajaxArgs.error = (jqXHR, status, err) ->
+        stateMachine.failedCall status
+        failFunc.call jqXHR, status, err
 
       # Pass the arguments to `$.ajax`
-      $.ajax arguments
+      @$.ajax ajaxArgs
     else
       # Alert the user that the request was not sent
       console.info 'Request not sent due to poor server state'
 
 
-  # Get_fsm_from_url
+  # getFsmFromUrl
   # -----------
   # ___Get the FSM based on the url___<br />
   # The url will always be in this format:
@@ -79,20 +94,20 @@ class CircuitBreaker
   #   path: <string>
   # }
   # ```
-  get_fsm_from_url: (url, config) ->
+  getFsmFromUrl: (url, config) ->
     # Get the URI:FSM map for the hostname
-    host_uris = @FSMs[url.hostname]
+    hostUris = @FSMs[url.hostname]
 
     # Check if no config was passed
     if !config
       # Make config the default that was set
-      config = @configuration.get_attributes()
+      config = @configuration.getAttributes()
 
     # create the configuration for the FSM
     configuration = new Configuration(config)
 
     # Check if the map exists
-    if host_uris == undefined
+    if hostUris == undefined
 
       # Create a new map with a single
       # URI:FSM mapping
@@ -110,12 +125,12 @@ class CircuitBreaker
     @FSMs[url.hostname][url.path]
 
 
-  # Get_url
+  # getUrl
   # -----------
   # ___Get the url from the AJAX  params___
-  get_url: (args) ->
+  getUrl: (args) ->
     # Check if url was the first argument
-    if args.length == 3 and typeof args[0] == "string"
+    if args.length > 1 and typeof args[0] == "string"
       # Parse the url and pick the keys
        @_.pick(@urijs.parse(args[0]), ['hostname', 'path'])
     # Check that the url is in the "settings" parameter
@@ -127,10 +142,10 @@ class CircuitBreaker
       {}
 
 
-  # Get_config
+  # getConfig
   # -----------
   # ___Get the config from the AJAX  params___
-  get_config: (args) ->
+  getConfig: (args) ->
     # Check if it was passed as the third argument
     if args.length == 3 and typeof args[2] == "object"
       args[2]
@@ -139,7 +154,22 @@ class CircuitBreaker
       args[1]
     # Just return the default
     else
-      @configuration.get_attributes()
+      @configuration.getAttributes()
+
+  # getAjaxArgs
+  # -----------
+  # ___Get the AJAX  params from an arguments list___
+  getAjaxArgs: (args) ->
+    # Check if the url was the first argument
+    if args.length > 1 and typeof args[0] == "string"
+      # Put the url in the params
+      args[1].url = args[0]
+
+      # Return the second (required) parameter
+      args[1]
+    else
+      # If not, it must be in the first argument
+      args[0]
 
 
 window.cb = new CircuitBreaker

@@ -9,7 +9,7 @@ class Configuration
     @_ = _
 
     # Set the default attributes
-    @attributes = @default_attributes
+    @attributes = @defaultAttributes
 
     # Set the attrs that were given to us
     @update(attrs)
@@ -20,19 +20,19 @@ class Configuration
   # ___Update the configuration's attributes___
   update: (attributes) ->
     # Keep track of the previous configuration
-    old_attributes = @attributes
+    oldAttributes = @attributes
 
     # Inherit the values of the new configuration
     @_.assign @attributes, attributes
 
     # Make sure that the new configuration is valid
-    @validate_configuration old_attributes
+    @validateConfiguration oldAttributes
 
 
-  # Default_attributes
+  # defaultAttributes
   # ------------------
   # ___Define the default attributes___
-  default_attributes:
+  defaultAttributes:
     # How long should the `Closed -> Partially Open`
     # timeout be (ms)?
     timeout: 10000
@@ -59,54 +59,54 @@ class Configuration
     debug: false
 
 
-  # Validate_configuration
+  # validateConfiguration
   # ----------------------
   # ___Make sure the set configuration is proper___<br />
   # In any case, if the configuration is not acceptable,
   # then revert the new value to the previous value
-  validate_configuration: (old_attributes) ->
+  validateConfiguration: (oldAttributes) ->
     # Check that `@attributes.timeout` is
     # a number and is greater than 0
     if !(typeof @attributes.timeout) == "number" or !@attributes.timeout < 1
-      if old_attributes.debug
+      if oldAttributes.debug
         console.info '[validate_configuration]: Assignment of attributes.timeout failed.'
-      @attributes.timeout = old_attributes.timeout
+      @attributes.timeout = oldAttributes.timeout
 
     # Check that `@attributes.resetAfter` is
     # a number and is greater than or equal to 0
     if !(typeof @attributes.resetAfter) == "number" or !@attributes.resetAfter < 0
-      if old_attributes.debug
-        console.info '[validate_configuration]: Assignment of attributes.resetAfter failed.'
-      @attributes.resetAfter = old_attributes.resetAfter
+      if oldAttributes.debug
+        console.info '[validateConfiguration]: Assignment of attributes.resetAfter failed.'
+      @attributes.resetAfter = oldAttributes.resetAfter
 
     # Check that `@attributes.threshold` is
     # a number and is greater than 0
     if !(typeof @attributes.threshold) == "number" or !@attributes.threshold < 1
-      if old_attributes.debug
-        console.info '[validate_configuration]: Assignment of attributes.threshold failed.'
-      @attributes.threshold = old_attributes.threshold
+      if oldAttributes.debug
+        console.info '[validateConfiguration]: Assignment of attributes.threshold failed.'
+      @attributes.threshold = oldAttributes.threshold
 
     # Check that `@attributes.ignoreCodes` is
     # an array and follows the spec for what we're expecting
-    if !(@attributes.ignoreCodes instanceof Array) or !_.every(@attributes.ignoreCodes, @is_proper_code)
-      if old_attributes.debug
+    if !(@attributes.ignoreCodes instanceof Array) or !_.every(@attributes.ignoreCodes, @isProperCode)
+      if oldAttributes.debug
         console.info '[validate_configuration]: Assignment of attributes.ignoreCodes failed.'
-      @attributes.ignoreCodes = old_attributes.ignoreCodes
+      @attributes.ignoreCodes = oldAttributes.ignoreCodes
 
 
-  # Is_proper_code
+  # isProperCode
   # -----------
   # ___Decides if a given code is acceptable for our uses___
-  is_proper_code: (code) ->
+  isProperCode: (code) ->
     # Define our regex rule for acceptable codes
     re = new RegExp(/[1-5][0-9\.][0-9\.]/)
     re.test(String(code))
 
 
-  # Get_attributes
+  # getAttributes
   # --------------
   # ___Return the attributes of the configuration___
-  get_attributes: ->
+  getAttributes: ->
     @attributes
 
 module.exports = Configuration

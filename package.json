@@ -2,6 +2,9 @@
   "name": "circuitbreaker-js",
   "version": "0.1.1",
   "description": "An implementation of the circuit breaker pattern for use in JavaScript.",
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  },
   "scripts": {
     "build": "node ./node_modules/.bin/gulp build",
     "test": "node ./node_modules/.bin/gulp test",

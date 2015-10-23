@@ -1,0 +1,23 @@
+{
+  "name": "circuitbreaker-js",
+  "description": "An implementation of the circuit breaker pattern for use in JavaScript.",
+  "main": "src/circuitbreaker.coffee",
+  "authors": [
+    "Rdbaker"
+  ],
+  "license": "ISC",
+  "keywords": [
+    "JavaScript",
+    "circuitBreaker",
+    "library"
+  ],
+  "homepage": "https://github.com/Rdbaker/CircuitBreaker",
+  "moduleType": [],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

@@ -8,7 +8,7 @@ class StateMachine
     @state = 'closed'
 
     # Set the current threshold
-    @threshold = @config.threshold
+    @threshold = @config.attributes.threshold
 
     # Set the current resetCount
     @resetCounter = 0
@@ -22,14 +22,21 @@ class StateMachine
     @state == 'closed' or @state == 'half-closed'
 
 
+  # isNotClosed
+  # -----------
+  # ___Decide if the circuit is closed or not___
+  isNotClosed: ->
+    @state != 'closed'
+
+
   # successfulCall
   # --------------
   # ___What to do on a successful call___
   successfulCall: ->
     # Check that the circuit isn't closed
-    if !@isOk()
+    if @isNotClosed()
       # Check that the reset counter is at the resetAfter mark
-      if ++@resetCounter >= @config.resetAfter
+      if ++@resetCounter >= @config.attributes.resetAfter
         # Reset the counter
         @resetCounter = 0
 
@@ -47,12 +54,12 @@ class StateMachine
       @resetCounter = 0
 
       # Check that the threshold is surpassed
-      if ++@threshold >= @config.threshold
+      if ++@threshold >= @config.attributes.threshold
         # Pop the circuit
         @state = 'open'
 
         # Start the timer to close the circuit
-        setTimeout @closeCircuit, @config.timeout
+        setTimeout @closeCircuit, @config.attributes.timeout
 
 
   # closeCircuit

@@ -97,10 +97,31 @@ class Configuration
   # isProperCode
   # -----------
   # ___Decides if a given code is acceptable for our uses___
-  isProperCode: (code) ->
+  isProperCode: (code) =>
     # Define our regex rule for acceptable codes
     re = new RegExp(/[1-5][0-9\.][0-9\.]/)
-    re.test(String(code))
+
+    # Check that the code is not even a number
+    if !re.test(String(code))
+      # return what they're NOT looking for
+      true
+    else
+      # Check if the code is not in the ignored codes
+      if(!@ignoredCode(String(code)))
+        false
+      else
+        true
+
+
+  # ignoredCode
+  # -----------
+  # ___Checks to see if the given code should be ignored___
+  ignoredCode: (code) =>
+    if(not (@attributes.ignoreCodes.indexOf(code) >= 0))
+      false
+    else
+      # TODO: put some logic in here
+      true
 
 
   # getAttributes

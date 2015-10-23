@@ -2,8 +2,10 @@
 
 $ = require('jquery')
 _ = require('lodash')
-urijs = require('URIjs')
+urijs = require('urijs')
 Configuration = require('./configuration.coffee')
+FiniteStateMachine = require('./statemachine.coffee')
+BrokenCircuitError = require('./errors/brokencircuiterror.coffee')
 
 class CircuitBreaker
   # Constructor
@@ -17,6 +19,9 @@ class CircuitBreaker
 
     # Grab lodash, we're going to need it
     @_ = _
+
+    # Set up the get and post methods
+    @_setupGetAndPost()
 
     # Initialize the map of FSMs. The map
     # will be hostnames as keys whose value
@@ -60,7 +65,7 @@ class CircuitBreaker
     ajaxArgs = @getAjaxArgs arguments
 
     # Check if the state is okay to send
-    if stateMachine.isOk()
+    if !!ajaxArgs and stateMachine.isOk()
       # Get the successful callback function
       succFunc = ajaxArgs.success
 
@@ -70,18 +75,24 @@ class CircuitBreaker
       # Set the success callback to first log the successful request
       ajaxArgs.success = (data, status, jqXHR) ->
         stateMachine.successfulCall()
-        succFunc.call data, status, jqXHR
+        if succFunc
+          succFunc.call jqXHR, data, status, jqXHR
 
       # Set the error callback to first log the failed request
       ajaxArgs.error = (jqXHR, status, err) ->
-        stateMachine.failedCall status
-        failFunc.call jqXHR, status, err
+        stateMachine.failedCall jqXHR.status
+        if failFunc
+          failFunc.call jqXHR, jqXHR, status, err
+
+      if (!ajaxArgs.contentType or ajaxArgs.contentType.indexOf('json') > -1) and typeof(ajaxArgs.data) == "object"
+        ajaxArgs.data = JSON.stringify ajaxArgs.data
+        ajaxArgs.contentType = 'application/json; charset=UTF-8'
 
       # Pass the arguments to `$.ajax`
       @$.ajax ajaxArgs
     else
       # Alert the user that the request was not sent
-      console.info 'Request not sent due to poor server state'
+      throw BrokenCircuitError 'Request not sent due to poor server state'
 
 
   # getFsmFromUrl
@@ -112,7 +123,7 @@ class CircuitBreaker
       # Create a new map with a single
       # URI:FSM mapping
       @FSMs[url.hostname] = {}
-      @FSMs[url.hostname][path] = new FiniteStateMachine(configuration)
+      @FSMs[url.hostname][url.path] = new FiniteStateMachine(configuration)
     else
 
       # Check if the URI:FSM mapping exists
@@ -170,6 +181,30 @@ class CircuitBreaker
     else
       # If not, it must be in the first argument
       args[0]
+
+  # _setupGetAndPost
+  # ----------------
+  # ___Set up the 'get' and 'post' methods___
+  # Code to setup kauth.get and kauth.post methods, taken from
+  # https://github.com/jquery/jquery/blob/master/src/ajax.js#L788
+  _setupGetAndPost: ->
+    @$.each( ['get', 'post'], (i, method) =>
+      @[method]  = (url, data, callback, type) =>
+        # Shift arguments if data was omitted
+        if @$.isFunction(data)
+          type = type or callback
+          callback = data
+          data = undefined
+
+        # The url can be an options object (which then must have .url)
+        @ajax(@$.extend({
+          url: url,
+          type: method,
+          dataType: type,
+          data: data,
+          success: callback
+        }, @$.isPlainObject(url) and url))
+    )
 
 
 window.cb = new CircuitBreaker

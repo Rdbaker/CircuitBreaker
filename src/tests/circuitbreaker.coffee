@@ -44,8 +44,17 @@ describe 'CircuitBreaker', ->
     it 'has "getAjaxArgs" defined on it', ->
       expect(cb.getAjaxArgs).toBeDefined()
 
-    it 'only has 11 initial objects/functions', ->
-      expect(Object.keys(cb).length + Object.keys(cb.__proto__).length).toBe 11
+    it 'has "_setupGetAndPost" defined on it', ->
+      expect(cb._setupGetAndPost).toBeDefined()
+
+    it 'has "get" defined on it', ->
+      expect(cb.get).toBeDefined()
+
+    it 'has "post" defined on it', ->
+      expect(cb.post).toBeDefined()
+
+    it 'has 14 initial objects/functions', ->
+      expect(Object.keys(cb).length + Object.keys(cb.__proto__).length).toBe 14
 
   describe '#ajax', ->
     fsm = {}

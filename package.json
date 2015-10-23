@@ -1,6 +1,6 @@
 {
   "name": "circuitbreaker-js",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "An implementation of the circuit breaker pattern for use in JavaScript.",
   "scripts": {
     "build": "node ./node_modules/.bin/gulp build",
@@ -28,7 +28,6 @@
     ]
   },
   "devDependencies": {
-    "URIjs": "^1.16.0",
     "coffeeify": "^1.1.0",
     "docco": "^0.7.0",
     "gulp": "^3.9.0",
@@ -47,6 +46,7 @@
   },
   "dependencies": {
     "jquery": "^2.1.4",
-    "lodash": "^3.10.1"
+    "lodash": "^3.10.1",
+    "urijs": "^1.16.0"
   }
 }
